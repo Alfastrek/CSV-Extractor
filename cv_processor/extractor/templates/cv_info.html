@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Assignment</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .truncate-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Internship Assingment</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Jumbotron -->
+    <div class="jumbotron jumbotron-fluid bg-info text-white text-center">
+        <div class="container">
+            <h1 class="display-4">OST Placement Search Private Limited            </h1>
+            <p class="lead">CSV Extractor Assignment Using Django</p>
+            <p class="lead">Aradhya Shukla</p>
+            <p class="lead">Email: aradhya1703@gmail.com | Phone: 9765590377</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-12 mt-3"> 
+        <button type="button" class="btn btn-primary mb-3" id="downloadBtn">Download as .xls</button>
+            <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>File</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Text (Preview)</th>
+                                <th>Full Text</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cv in cv_info %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ cv.File }}</td>
+                                <td>{{ cv.Email }}</td>
+                                <td>{{ cv.Phone }}</td>
+                                <td class="truncate-text">{{ cv.Text|slice:":50" }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal{{ forloop.counter }}">
+                                        View Full Text
+                                    </button>
+                                    <div class="modal fade" id="exampleModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Full Text</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {{ cv.Text }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-white text-center py-3">
+        <div class="container">
+            <p class="mb-0">© 2024 Aradhya Shukla. All rights reserved.</p>
+        </div>
+    </footer>
+<!-- JavaScript to handle Excel download -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script>
+    document.getElementById("downloadBtn").addEventListener("click", function() {
+        // Get table data
+        var table = document.querySelector('.table');
+
+        // Create a new workbook
+        var workbook = new ExcelJS.Workbook();
+        var worksheet = workbook.addWorksheet('CV Information');
+
+        // Add column headers
+        // Add column headers with formatting
+        worksheet.columns = [
+        { header: 'File', key: 'file', width: 20 },
+        { header: 'Email', key: 'email', width: 30 },
+        { header: 'Phone', key: 'phone', width: 15 },
+        { header: 'Preview Text', key: 'previewText', width: 40 },
+        ];
+
+        // Format header row
+        worksheet.getRow(1).font = { bold: true };
+        worksheet.getRow(1).alignment = { horizontal: 'center' };
+        worksheet.getRow(1).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFC0C0C0' } // Light gray background color
+        };
+
+        // Loop through table rows and copy data to the worksheet
+        var rows = table.rows;
+        for (let i = 1; i < rows.length; i++) { // start from 1 to avoid the header row
+        let cells = rows[i].cells;
+        let rowData = {
+            file: cells[1].innerText,
+            email: cells[2].innerText,
+            phone: cells[3].innerText,
+            previewText: cells[4].innerText,
+        };
+        worksheet.addRow(rowData).alignment = { horizontal: 'center' }; // Center-align data cells
+        }
+
+        
+
+        // Generate Excel file
+        workbook.xlsx.writeBuffer()
+            .then(function(buffer) {
+                // Convert buffer to Blob
+                var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+                // Trigger file download
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'cv_information.xlsx';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+    });
+</script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
