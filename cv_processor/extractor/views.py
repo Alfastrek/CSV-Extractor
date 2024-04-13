@@ -3,6 +3,7 @@ from .utils import process_cv_directory
 from django.shortcuts import render
 from django.shortcuts import render
 import os
+
 cv_directory = os.path.join("cv_processor", "static", "cv_files")
 def display_cv_info(request): 
     cv_info = process_cv_directory(cv_directory)
