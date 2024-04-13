@@ -65,24 +65,7 @@
                                 <td>{{ cv.Phone }}</td>
                                 <td class="truncate-text">{{ cv.Text|slice:":50" }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal{{ forloop.counter }}">
-                                        View Full Text
-                                    </button>
-                                    <div class="modal fade" id="exampleModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Full Text</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    {{ cv.Text }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   {{cv.Text}}
                                 </td>
                             </tr>
                             {% endfor %}
@@ -118,6 +101,7 @@
         { header: 'Email', key: 'email', width: 30 },
         { header: 'Phone', key: 'phone', width: 15 },
         { header: 'Preview Text', key: 'previewText', width: 40 },
+        { header: 'Full Text', key: 'fullText', width: 1000}
         ];
 
         // Format header row
@@ -138,6 +122,7 @@
             email: cells[2].innerText,
             phone: cells[3].innerText,
             previewText: cells[4].innerText,
+            fullText: cells[5].innerText
         };
         worksheet.addRow(rowData).alignment = { horizontal: 'center' }; // Center-align data cells
         }
