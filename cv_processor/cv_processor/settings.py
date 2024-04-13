@@ -81,7 +81,12 @@ WSGI_APPLICATION = "cv_processor.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 from pathlib import Path
+from django.conf import settings
+import os
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

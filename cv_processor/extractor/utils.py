@@ -3,6 +3,8 @@ import re
 import docx
 from PyPDF2 import PdfReader
 
+directory= os.path.join("cv_processor","static","cv_files")
+
 def extract_text_from_pdf(pdf_file):
     text = ""
     with open(pdf_file, "rb") as file:
@@ -44,12 +46,3 @@ def process_cv_directory(directory):
             cv_info.append({"File": filename, "Email": email, "Phone": phone, "Text": text})
     return cv_info
 
-# Test the function
-cv_directory = "cv_processor\cv_files"
-cv_info = process_cv_directory(cv_directory)
-for cv in cv_info:
-    print("File:", cv["File"])
-    print("Email:", cv["Email"])
-    print("Phone:", cv["Phone"])
-    print("Text:", cv["Text"])
-    print()
